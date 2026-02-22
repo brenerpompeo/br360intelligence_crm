@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   Users, DollarSign, Zap, BarChart3,
   ShoppingCart, Settings, Globe, FileText,
-  Repeat, AlertTriangle, Layers, Rocket
+  Repeat, AlertTriangle, Layers, Rocket, Map
 } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { WorkflowStep } from "@/components/WorkflowStep";
@@ -99,7 +100,12 @@ const Index = () => {
               <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">ops command center</p>
             </div>
           </div>
-          <span className="text-xs text-muted-foreground font-mono capitalize">{today}</span>
+          <div className="flex items-center gap-3">
+            <Link to="/roadmap" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-mono">
+              <Map className="h-3.5 w-3.5" /> Roadmap
+            </Link>
+            <span className="text-xs text-muted-foreground font-mono capitalize">{today}</span>
+          </div>
         </div>
       </header>
 
