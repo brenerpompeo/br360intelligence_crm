@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import {
-  ArrowLeft, Users, FolderKanban, TrendingUp,
-  DollarSign, Settings2, BarChart3, CheckCircle2,
-  Circle, Clock, Layers, ArrowRight
+  CheckCircle2, Circle, Clock, Layers, ArrowRight
+} from "lucide-react";
+import { AppLayout } from "@/components/AppLayout";
+import {
+  BarChart3, Users, FolderKanban, Settings2,
+  DollarSign, TrendingUp
 } from "lucide-react";
 
 interface Phase {
@@ -45,19 +47,19 @@ const phases: Phase[] = [
   {
     id: 2,
     title: "Gestão de Vendas & Pipeline",
-    status: "upcoming",
-    quarter: "Fase 2",
+    status: "done",
+    quarter: "Concluído",
     modules: [
       {
         icon: Users,
         name: "Gestão de Vendas & Clientes",
-        status: "planned",
+        status: "done",
         features: [
-          "Pipeline visual (Kanban): Lead → Contato → Proposta → Setup → Ativo",
-          "Ficha do cliente com dados do formulário Tally",
-          "Status de pagamento (Setup pago / Assinatura ativa)",
-          "Histórico de interações e notas",
-          "Acompanhamento de conversão por etapa",
+          "Pipeline visual: Lead → Proposta → Setup → Ativo",
+          "Critérios de entrada por etapa",
+          "Ações obrigatórias por etapa",
+          "Dicas de conversão",
+          "Métricas de funil",
         ],
       },
     ],
@@ -65,30 +67,28 @@ const phases: Phase[] = [
   {
     id: 3,
     title: "Gestão de Projetos & Setup",
-    status: "upcoming",
-    quarter: "Fase 3",
+    status: "done",
+    quarter: "Concluído",
     modules: [
       {
         icon: FolderKanban,
         name: "Gestão de Projetos/Setup",
-        status: "planned",
+        status: "done",
         features: [
-          "Rastreamento dos 5 passos de setup por cliente",
-          "Barra de progresso visual por projeto",
-          "Prazos e SLAs por etapa",
-          "Atribuição de responsáveis",
-          "Alertas de atraso automáticos",
+          "Checklist interativo dos 5 passos de setup",
+          "Barra de progresso visual por passo",
+          "Dicas operacionais por etapa",
+          "Instruções detalhadas com sub-tarefas",
         ],
       },
       {
         icon: Settings2,
         name: "Operações",
-        status: "planned",
+        status: "done",
         features: [
           "Checklist de setup reutilizável",
-          "Tarefas operacionais recorrentes",
-          "Automações (webhook Payload → atualização de status)",
-          "Log de alterações por cliente",
+          "Guia de manutenção via Payload CMS",
+          "Regras de domínio (Cenários A e B)",
         ],
       },
     ],
@@ -96,31 +96,29 @@ const phases: Phase[] = [
   {
     id: 4,
     title: "Financeiro & Upsells",
-    status: "upcoming",
-    quarter: "Fase 4",
+    status: "done",
+    quarter: "Concluído",
     modules: [
       {
         icon: DollarSign,
         name: "Financeiro",
-        status: "planned",
+        status: "done",
         features: [
-          "Dashboard de MRR real vs. meta",
-          "Receita de setup acumulada",
-          "Fluxo de caixa mensal (entradas vs. custos)",
-          "Margem de lucro por cliente",
-          "Previsão de receita (forecast)",
+          "Simulação de MRR por número de clientes",
+          "Estrutura de custos detalhada",
+          "Regras de fluxo de caixa",
+          "KPIs financeiros (break-even, margem)",
         ],
       },
       {
         icon: TrendingUp,
         name: "Gestão de Upsells",
-        status: "planned",
+        status: "done",
         features: [
-          "Catálogo de serviços adicionais com preços",
+          "Catálogo de serviços com preços e margens",
+          "Scripts de venda prontos",
           "Controle de fornecedores e custos",
-          "Margem por upsell vendido",
-          "Pipeline de upsell por cliente",
-          "Relatório de receita extra mensal",
+          "Dicas operacionais por upsell",
         ],
       },
     ],
@@ -137,39 +135,17 @@ const statusConfig = {
 
 const Roadmap = () => {
   return (
-    <div className="min-h-screen bg-background bg-grid">
-      {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm">
-              <ArrowLeft className="h-4 w-4" />
-              Dashboard
-            </Link>
-            <span className="text-border">/</span>
-            <div className="flex items-center gap-2">
-              <Layers className="h-4 w-4 text-primary" />
-              <h1 className="text-sm font-bold tracking-tight">
-                Roadmap de <span className="text-gradient">Evolução</span>
-              </h1>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-        {/* Intro */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="rounded-lg border border-primary/20 bg-card/50 p-5 glow-primary">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            <span className="text-primary font-semibold">Escopo:</span> Esta ferramenta gerencia{" "}
-            <span className="text-foreground font-medium">vendas, projetos, financeiro e operações</span> do negócio BR360.
-            O <span className="text-foreground font-medium">Payload CMS</span> continua gerenciando os dados dos sites dos clientes (textos, cores, imagens).
+    <AppLayout>
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-xl font-bold tracking-tight mb-1">Roadmap de <span className="text-gradient">Evolução</span></h2>
+          <p className="text-sm text-muted-foreground">
+            Visão geral de todas as áreas da ferramenta. O Payload CMS gerencia os dados dos sites dos clientes.
           </p>
-        </motion.div>
+        </div>
 
         {/* Timeline */}
         <div className="relative">
-          {/* Vertical line */}
           <div className="absolute left-[19px] top-4 bottom-4 w-px bg-border hidden sm:block" />
 
           <div className="space-y-8">
@@ -182,22 +158,18 @@ const Roadmap = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: pi * 0.1 }}
                 >
-                  {/* Phase header */}
                   <div className="flex items-center gap-3 mb-4">
                     <div className={`h-10 w-10 rounded-full border flex items-center justify-center shrink-0 ${statusConfig[phase.status].bg}`}>
                       <PhaseIcon className={`h-4 w-4 ${statusConfig[phase.status].color}`} />
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h2 className="text-base font-bold">{phase.title}</h2>
-                        <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-full border ${statusConfig[phase.status].bg} ${statusConfig[phase.status].color}`}>
-                          {phase.quarter}
-                        </span>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-base font-bold">{phase.title}</h3>
+                      <span className={`text-[10px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-full border ${statusConfig[phase.status].bg} ${statusConfig[phase.status].color}`}>
+                        {phase.quarter}
+                      </span>
                     </div>
                   </div>
 
-                  {/* Modules */}
                   <div className="sm:ml-[52px] space-y-3">
                     {phase.modules.map((mod, mi) => {
                       const ModIcon = mod.icon;
@@ -206,7 +178,7 @@ const Roadmap = () => {
                         <div key={mi} className={`rounded-lg border p-4 ${modStatus.bg}`}>
                           <div className="flex items-center gap-2 mb-3">
                             <ModIcon className={`h-4 w-4 ${modStatus.color}`} />
-                            <h3 className="text-sm font-semibold">{mod.name}</h3>
+                            <h4 className="text-sm font-semibold">{mod.name}</h4>
                             <span className={`ml-auto text-[10px] font-mono uppercase ${modStatus.color}`}>
                               {modStatus.label}
                             </span>
@@ -228,14 +200,8 @@ const Roadmap = () => {
             })}
           </div>
         </div>
-
-        <footer className="border-t pt-6 pb-8 text-center">
-          <p className="text-xs text-muted-foreground font-mono">
-            BR360 Intelligence — Roadmap de Evolução — Ferramenta de Gestão Interna
-          </p>
-        </footer>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
