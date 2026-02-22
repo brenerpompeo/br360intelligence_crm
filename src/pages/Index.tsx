@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import {
   Users, DollarSign, Zap, BarChart3,
   ShoppingCart, Settings, Globe, FileText,
-  Repeat, AlertTriangle, Layers, Rocket, Map
+  Repeat, AlertTriangle, Layers, Rocket
 } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { WorkflowStep } from "@/components/WorkflowStep";
 import { GapCard } from "@/components/GapCard";
 import { UpsellCard } from "@/components/UpsellCard";
 import { ArchitectureTable } from "@/components/ArchitectureTable";
+import { AppLayout } from "@/components/AppLayout";
 
 const workflowSteps = [
   {
@@ -85,37 +85,14 @@ const Index = () => {
   const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
 
   return (
-    <div className="min-h-screen bg-background bg-grid">
-      {/* Header */}
-      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary/15 flex items-center justify-center">
-              <Zap className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold tracking-tight">
-                BR360 <span className="text-gradient">Intelligence</span>
-              </h1>
-              <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">ops command center</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link to="/roadmap" className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary transition-colors font-mono">
-              <Map className="h-3.5 w-3.5" /> Roadmap
-            </Link>
-            <span className="text-xs text-muted-foreground font-mono capitalize">{today}</span>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+    <AppLayout>
+      <div className="space-y-10">
         {/* Tese */}
         <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <div className="rounded-lg border border-primary/20 bg-card/50 p-5 glow-primary">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="text-primary font-semibold">Lembrete:</span> Você não vende código ou horas de design. 
-              Você vende <span className="text-foreground font-medium">Velocidade, Conversão e Paz de Espírito</span> por 
+              <span className="text-primary font-semibold">Lembrete:</span> Você não vende código ou horas de design.
+              Você vende <span className="text-foreground font-medium">Velocidade, Conversão e Paz de Espírito</span> por
               meio de assinatura (Setup + R$ 150/mês). 100 clientes, 1 banco de dados, 1 repositório.
             </p>
           </div>
@@ -183,15 +160,8 @@ const Index = () => {
             </div>
           </section>
         </div>
-
-        {/* Footer */}
-        <footer className="border-t pt-6 pb-8 text-center">
-          <p className="text-xs text-muted-foreground font-mono">
-            BR360 Intelligence — One-Person Venture Studio — Documento Mestre SOP
-          </p>
-        </footer>
-      </main>
-    </div>
+      </div>
+    </AppLayout>
   );
 };
 
