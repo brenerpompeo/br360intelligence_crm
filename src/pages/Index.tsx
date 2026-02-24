@@ -17,7 +17,7 @@ const workflowSteps = [
     duration: "Assíncrono",
     icon: ShoppingCart,
     tasks: [
-      "Cliente pagou Taxa de Setup (R$ 500)?",
+      "Cliente pagou Taxa de Setup (R$ 1.490)?",
       "Redirecionado para formulário (Tally.so/Typeform)?",
       "Perguntas respondidas: cores, texto, domínio, logo/fotos?",
     ],
@@ -93,7 +93,7 @@ const Index = () => {
             <p className="text-sm text-muted-foreground leading-relaxed">
               <span className="text-primary font-semibold">Lembrete:</span> Você não vende código ou horas de design.
               Você vende <span className="text-foreground font-medium">Velocidade, Conversão e Paz de Espírito</span> por
-              meio de assinatura (Setup + R$ 150/mês). 100 clientes, 1 banco de dados, 1 repositório.
+              meio de assinatura (Setup + R$ 274,90/mês). 100 clientes, 1 banco de dados, 1 repositório.
             </p>
           </div>
         </motion.section>
@@ -101,7 +101,7 @@ const Index = () => {
         {/* Metrics */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard icon={Users} label="Meta: Clientes" value="100" subtitle="1 BD, 1 repo, custo marginal zero" accentColor="primary" />
-          <MetricCard icon={DollarSign} label="MRR Meta" value="R$ 15k" subtitle="100 × R$ 150/mês" accentColor="accent" />
+          <MetricCard icon={DollarSign} label="MRR Meta" value="R$ 27,5k" subtitle="100 × R$ 274,90/mês" accentColor="accent" />
           <MetricCard icon={Layers} label="Avatares" value="2" subtitle="Criativos + Negócios Locais" accentColor="primary" />
           <MetricCard icon={BarChart3} label="Custo Infra" value="R$ 0" subtitle="Até escala massiva" accentColor="accent" />
         </section>
