@@ -2,21 +2,26 @@ import { ReactNode } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, ListChecks, Users, TrendingUp,
-  DollarSign, Map, Zap
+  DollarSign, Map, Zap, FileText, Calculator, LogOut
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/setup", icon: ListChecks, label: "Setup Checklist" },
-  { to: "/pipeline", icon: Users, label: "Pipeline" },
-  { to: "/upsells", icon: TrendingUp, label: "Upsells" },
-  { to: "/financeiro", icon: DollarSign, label: "Financeiro" },
+  { to: "/crm", icon: Users, label: "CRM" },
+  { to: "/propostas", icon: FileText, label: "Propostas" },
+  { to: "/plano-contas", icon: Calculator, label: "Financeiro" },
+  { to: "/setup", icon: ListChecks, label: "Setup" },
+  { to: "/pipeline", icon: TrendingUp, label: "Pipeline" },
+  { to: "/upsells", icon: DollarSign, label: "Upsells" },
+  { to: "/financeiro", icon: DollarSign, label: "Ref. Financeira" },
   { to: "/roadmap", icon: Map, label: "Roadmap" },
 ];
 
 export const AppLayout = ({ children }: { children: ReactNode }) => {
   const { pathname } = useLocation();
+  const { signOut, user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background bg-grid">
@@ -36,6 +41,9 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
               </p>
             </div>
           </Link>
+          <button onClick={signOut} className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <LogOut className="h-3.5 w-3.5" /> Sair
+          </button>
         </div>
 
         {/* Nav tabs */}

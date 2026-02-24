@@ -14,13 +14,317 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chart_of_accounts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_default: boolean
+          name: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_default?: boolean
+          name?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      client_interactions: {
+        Row: {
+          client_id: string
+          created_at: string
+          id: string
+          interaction_date: string
+          notes: string | null
+          subject: string | null
+          type: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          id?: string
+          interaction_date?: string
+          notes?: string | null
+          subject?: string | null
+          type: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          id?: string
+          interaction_date?: string
+          notes?: string | null
+          subject?: string | null
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_interactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      client_services: {
+        Row: {
+          client_id: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          monthly_value: number | null
+          service_name: string
+          start_date: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          monthly_value?: number | null
+          service_name: string
+          start_date?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          monthly_value?: number | null
+          service_name?: string
+          start_date?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_services_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          address: string | null
+          city: string | null
+          cnpj_cpf: string | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          state: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          cnpj_cpf?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          state?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          cnpj_cpf?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          state?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      proposal_items: {
+        Row: {
+          description: string
+          id: string
+          proposal_id: string
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          description: string
+          id?: string
+          proposal_id: string
+          quantity?: number
+          unit_price?: number
+        }
+        Update: {
+          description?: string
+          id?: string
+          proposal_id?: string
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposal_items_proposal_id_fkey"
+            columns: ["proposal_id"]
+            isOneToOne: false
+            referencedRelation: "proposals"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      proposals: {
+        Row: {
+          additional_notes: string | null
+          client_id: string
+          contract_text: string | null
+          created_at: string
+          id: string
+          monthly_fee: number
+          sent_at: string | null
+          setup_fee: number
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          valid_until: string | null
+        }
+        Insert: {
+          additional_notes?: string | null
+          client_id: string
+          contract_text?: string | null
+          created_at?: string
+          id?: string
+          monthly_fee?: number
+          sent_at?: string | null
+          setup_fee?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+          valid_until?: string | null
+        }
+        Update: {
+          additional_notes?: string | null
+          client_id?: string
+          contract_text?: string | null
+          created_at?: string
+          id?: string
+          monthly_fee?: number
+          sent_at?: string | null
+          setup_fee?: number
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proposals_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          account_id: string
+          amount: number
+          client_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          transaction_date: string
+          user_id: string
+        }
+        Insert: {
+          account_id: string
+          amount: number
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          transaction_date?: string
+          user_id: string
+        }
+        Update: {
+          account_id?: string
+          amount?: number
+          client_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          transaction_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "chart_of_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_proposal_user_id: { Args: { p_proposal_id: string }; Returns: string }
     }
     Enums: {
       [_ in never]: never
