@@ -33,9 +33,9 @@ const setupSteps: SetupStep[] = [
     icon: ShoppingCart,
     variant: "default",
     description:
-      "O cliente acabou de pagar a Taxa de Setup (R$ 500). Agora ele precisa preencher o formulário com todas as informações do site.",
+      "O cliente acabou de pagar a Taxa de Setup (R$ 1.490). Agora ele precisa preencher o formulário com todas as informações do site.",
     tasks: [
-      { text: "Confirmar pagamento da Taxa de Setup (R$ 500)", detail: "Verificar no gateway de pagamento ou Pix" },
+      { text: "Confirmar pagamento da Taxa de Setup (R$ 1.490)", detail: "Verificar no gateway de pagamento ou Pix" },
       { text: "Enviar link do formulário ao cliente", detail: "Tally.so ou Typeform — usar template padrão BR360" },
       { text: "Aguardar respostas: cores, textos, domínio, logo/fotos", detail: "Se demorar >48h, enviar lembrete" },
       { text: "Validar se fotos têm qualidade mínima aceitável", detail: "Resolução mínima 800×600, sem blur" },
@@ -99,7 +99,7 @@ const setupSteps: SetupStep[] = [
     description:
       "Configurar o domínio do cliente. Existem dois cenários possíveis.",
     tasks: [
-      { text: "Cenário A: Comprar domínio na Hostinger", detail: "Usar parte do valor do Setup para comprar (~R$ 40/ano)" },
+      { text: "Cenário A: Comprar domínio na Hostinger", detail: "Usar parte do valor do Setup para cobrir (~R$ 40/ano)" },
       { text: "Cenário A: Criar CNAME → cname.vercel-dns.com" },
       { text: "Cenário B: Cliente já tem domínio próprio", detail: "Enviar instrução padrão ao cliente" },
       { text: "NUNCA pedir senha do registrador do cliente" },
@@ -127,7 +127,7 @@ const setupSteps: SetupStep[] = [
       { text: "Registrar a alteração no log do cliente" },
     ],
     tips: [
-      "Manutenção está inclusa na assinatura de R$ 150/mês",
+      "Manutenção está inclusa na assinatura de R$ 274,90/mês",
       "Se o cliente pedir algo fora dos blocos pré-construídos → R$ 5.000 ou cliente demitido",
       "Use o webhook do Payload para rebuild automático na Vercel",
     ],

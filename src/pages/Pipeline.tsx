@@ -51,7 +51,7 @@ const stages: PipelineStage[] = [
     criteria: [
       "Lead qualificado e interessado",
       "Proposta enviada com valores claros",
-      "Setup R$ 500 + Assinatura R$ 150/mês",
+      "Setup R$ 1.490 + Assinatura R$ 274,90/mês",
     ],
     actions: [
       "Enviar proposta padronizada (Google Docs/PDF)",
@@ -70,7 +70,7 @@ const stages: PipelineStage[] = [
     bgColor: "bg-primary/10 border-primary/20",
     description: "Cliente pagou! Agora está no processo dos 5 passos de setup.",
     criteria: [
-      "Taxa de Setup (R$ 500) paga",
+      "Taxa de Setup (R$ 1.490) paga",
       "Formulário de informações enviado",
     ],
     actions: [

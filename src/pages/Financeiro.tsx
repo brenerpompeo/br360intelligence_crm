@@ -7,11 +7,11 @@ import {
 import { AppLayout } from "@/components/AppLayout";
 
 const mrrSimulation = [
-  { clients: 10, mrr: "R$ 1.500", setup: "R$ 5.000", annual: "R$ 23.000" },
-  { clients: 25, mrr: "R$ 3.750", setup: "R$ 12.500", annual: "R$ 57.500" },
-  { clients: 50, mrr: "R$ 7.500", setup: "R$ 25.000", annual: "R$ 115.000" },
-  { clients: 75, mrr: "R$ 11.250", setup: "R$ 37.500", annual: "R$ 172.500" },
-  { clients: 100, mrr: "R$ 15.000", setup: "R$ 50.000", annual: "R$ 230.000" },
+  { clients: 10, mrr: "R$ 2.749", setup: "R$ 14.900", annual: "R$ 47.888" },
+  { clients: 25, mrr: "R$ 6.872", setup: "R$ 37.250", annual: "R$ 119.720" },
+  { clients: 50, mrr: "R$ 13.745", setup: "R$ 74.500", annual: "R$ 239.440" },
+  { clients: 75, mrr: "R$ 20.617", setup: "R$ 111.750", annual: "R$ 359.160" },
+  { clients: 100, mrr: "R$ 27.490", setup: "R$ 149.000", annual: "R$ 478.880" },
 ];
 
 const costs = [
@@ -29,8 +29,8 @@ const cashFlowRules = [
     color: "text-accent",
     title: "Receitas",
     items: [
-      "Taxa de Setup: R$ 500 por cliente (receita única)",
-      "Assinatura: R$ 150/mês por cliente (receita recorrente)",
+      "Taxa de Setup: R$ 1.490 por cliente (receita única)",
+      "Assinatura: R$ 274,90/mês por cliente (receita recorrente)",
       "Upsells: R$ 300-800 por serviço (receita variável)",
     ],
   },
@@ -51,17 +51,17 @@ const cashFlowRules = [
     items: [
       "NUNCA usar AWS S3 — custos de egress podem quebrar o negócio",
       "Setup SEMPRE pago antes de começar o trabalho",
-      "Margem mínima por cliente: R$ 120/mês (após custos rateados)",
+      "Margem mínima por cliente: R$ 250/mês (após custos rateados)",
       "Churn >5%/mês = sinal de alerta, investigar causas",
     ],
   },
 ];
 
 const kpis = [
-  { label: "MRR Meta", value: "R$ 15.000", sub: "100 clientes × R$ 150", icon: Target, color: "text-primary" },
+  { label: "MRR Meta", value: "R$ 27.490", sub: "100 clientes × R$ 274,90", icon: Target, color: "text-primary" },
   { label: "Custo Marginal", value: "~R$ 0", sub: "Por cliente adicional", icon: Calculator, color: "text-accent" },
-  { label: "Setup Receita", value: "R$ 500", sub: "Por cliente (uma vez)", icon: CreditCard, color: "text-amber-400" },
-  { label: "Break-even", value: "~15 clientes", sub: "Custos fixos cobertos", icon: TrendingUp, color: "text-accent" },
+  { label: "Setup Receita", value: "R$ 1.490", sub: "Por cliente (uma vez)", icon: CreditCard, color: "text-amber-400" },
+  { label: "Break-even", value: "~5 clientes", sub: "Custos fixos cobertos", icon: TrendingUp, color: "text-accent" },
 ];
 
 const Financeiro = () => {
