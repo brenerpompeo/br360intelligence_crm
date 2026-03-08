@@ -1,164 +1,239 @@
-import { motion } from "framer-motion";
-import {
-  Users, DollarSign, Zap, BarChart3,
-  ShoppingCart, Settings, Globe, FileText,
-  Repeat, AlertTriangle, Layers, Rocket
-} from "lucide-react";
-import { MetricCard } from "@/components/MetricCard";
-import { WorkflowStep } from "@/components/WorkflowStep";
-import { GapCard } from "@/components/GapCard";
-import { UpsellCard } from "@/components/UpsellCard";
-import { ArchitectureTable } from "@/components/ArchitectureTable";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 import { AppLayout } from "@/components/AppLayout";
+import { MetricCard } from "@/components/MetricCard";
+import {
+  Users, DollarSign, Activity, Settings,
+  ArrowUpRight, Clock, MessageSquare, Briefcase, Zap
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-const workflowSteps = [
-  {
-    title: "Venda & Triage",
-    duration: "Assíncrono",
-    icon: ShoppingCart,
-    tasks: [
-      "Cliente pagou Taxa de Setup (R$ 1.490)?",
-      "Redirecionado para formulário (Tally.so/Typeform)?",
-      "Perguntas respondidas: cores, texto, domínio, logo/fotos?",
-    ],
-  },
-  {
-    title: "Setup no Cérebro (Payload CMS)",
-    duration: "~5 min",
-    icon: Settings,
-    tasks: [
-      "Acessar Payload CMS → 'Novo Cliente'",
-      "Colar textos do formulário",
-      "Enviar fotos via plugin Cloudinary (otimização automática)",
-      "Selecionar layout: criativo ou local_business",
-      "Copiar API_KEY gerada",
-    ],
-  },
-  {
-    title: "Deploy na Vercel",
-    duration: "~3 min",
-    icon: Rocket,
-    tasks: [
-      "Vercel → 'New Project' → Repositório Master",
-      "Colar API_KEY na variável CLIENT_ID",
-      "Clicar Deploy (site nasce em 60s)",
-    ],
-  },
-  {
-    title: "Domínio (Ramificação)",
-    duration: "Variável",
-    icon: Globe,
-    variant: "critical" as const,
-    tasks: [
-      "Cenário A: Comprar domínio na Hostinger com parte do Setup",
-      "Cenário A: Criar CNAME → cname.vercel-dns.com",
-      "Cenário B: Enviar instrução padrão ao cliente (sem pedir senha!)",
-      "Verificar propagação DNS",
-    ],
-  },
-  {
-    title: "Loop de Manutenção",
-    duration: "Contínuo",
-    icon: Repeat,
-    tasks: [
-      "Alteração pedida? Editar no Payload CMS → Salvar",
-      "Webhook avisa Vercel → site atualiza em ~1 min",
-      "NÃO mexer no código para manutenção",
-    ],
-  },
-];
+type ClientStatus = "lead" | "active" | "inactive" | "churned";
 
-const gaps = [
-  { gap: "Estouro de servidor por imagens", solution: "Regra inquebrável: nenhuma foto entra crua. Cloudinary/Squoosh → .webp obrigatório." },
-  { gap: "Fatura surpresa (AWS S3)", solution: "Proibido usar AWS nesta fase. Custos de egress podem quebrar o negócio. Ficar com Cloudinary + Vercel." },
-  { gap: "Cliente exigindo funções exclusivas complexas", solution: "Dizer NÃO. Fora dos blocos pré-construídos = R$ 5.000 ou cliente demitido." },
-  { gap: "O 'Paciente Zero'", solution: "Site BR360 = Tenant ID 000 no próprio sistema. Se o sistema for ruim, seu site cai. Alinhamento total." },
-];
+const statusColors: Record<ClientStatus, string> = {
+  lead: "bg-blue-400/15 text-blue-400",
+  active: "bg-accent/15 text-accent",
+  inactive: "bg-muted text-muted-foreground",
+  churned: "bg-destructive/15 text-destructive",
+};
 
-const upsells = [
-  { service: "Redesign de Logo", sellPrice: "R$ 500", cost: "R$ 150", profit: "R$ 350", note: "Freelancer via Workana/Fiverr" },
-  { service: "Sessão de Fotos", sellPrice: "R$ 800", cost: "R$ 300", profit: "R$ 500", note: "Fotógrafo local iniciante com boa câmera" },
-  { service: "Copywriting Premium", sellPrice: "R$ 300", cost: "R$ 0", profit: "R$ 300", note: "ChatGPT Plus + prompt validado (~15 min)" },
-];
+const statusLabels: Record<ClientStatus, string> = {
+  lead: "Lead",
+  active: "Ativo",
+  inactive: "Inativo",
+  churned: "Churned",
+};
 
 const Index = () => {
+  const { workspaceId } = useAuth();
   const today = new Date().toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+
+  const { data: metrics, isLoading } = useQuery({
+    queryKey: ["dashboard-metrics", workspaceId],
+    queryFn: async () => {
+      // Clientes
+      const { data: clients } = await supabase
+        .from("clients")
+        .select("id, status, pipeline_stage, name")
+        .eq("workspace_id", workspaceId);
+
+      const activeClientsCount = clients?.filter(c => c.status === "active").length || 0;
+      const setupsPending = clients?.filter(c => c.pipeline_stage === "setup") || [];
+
+      // MRR (Serviços Ativos)
+      const { data: services } = await supabase
+        .from("client_services")
+        .select("monthly_value")
+        .eq("status", "active")
+        .eq("workspace_id", workspaceId);
+
+      const mrr = services?.reduce((acc, curr) => acc + (Number(curr.monthly_value) || 0), 0) || 0;
+
+      // Setup Revenue Estimate (Transactions with amount > 1000 could be setups, but let's just calc total revenue for this month)
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const { data: txs } = await supabase
+        .from("transactions")
+        .select("amount")
+        .eq("workspace_id", workspaceId)
+        .gte("transaction_date", startOfMonth.toISOString());
+
+      const monthlyRevenue = txs?.reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0) || 0;
+
+      return {
+        activeClientsCount,
+        setupsPending,
+        mrr,
+        monthlyRevenue
+      };
+    },
+    enabled: !!workspaceId,
+  });
+
+  const { data: recentActivity = [] } = useQuery({
+    queryKey: ["recent-activity", workspaceId],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("client_interactions")
+        .select("*, clients(name)")
+        .eq("workspace_id", workspaceId)
+        .order("interaction_date", { ascending: false })
+        .limit(6);
+      return data || [];
+    },
+    enabled: !!workspaceId,
+  });
 
   return (
     <AppLayout>
-      <div className="space-y-10">
-        {/* Tese */}
-        <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div className="rounded-lg border border-primary/20 bg-card/50 p-5 glow-primary">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              <span className="text-primary font-semibold">Lembrete:</span> Você não vende código ou horas de design.
-              Você vende <span className="text-foreground font-medium">Velocidade, Conversão e Paz de Espírito</span> por
-              meio de assinatura (Setup + R$ 274,90/mês). 100 clientes, 1 banco de dados, 1 repositório.
-            </p>
+      <div className="space-y-8">
+        {/* Header Options */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight">Overview</h1>
+            <p className="text-sm text-muted-foreground mt-1 capitalize">{today}</p>
           </div>
-        </motion.section>
-
-        {/* Metrics */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <MetricCard icon={Users} label="Meta: Clientes" value="100" subtitle="1 BD, 1 repo, custo marginal zero" accentColor="primary" />
-          <MetricCard icon={DollarSign} label="MRR Meta" value="R$ 27,5k" subtitle="100 × R$ 274,90/mês" accentColor="accent" />
-          <MetricCard icon={Layers} label="Avatares" value="2" subtitle="Criativos + Negócios Locais" accentColor="primary" />
-          <MetricCard icon={BarChart3} label="Custo Infra" value="R$ 0" subtitle="Até escala massiva" accentColor="accent" />
-        </section>
-
-        {/* Architecture */}
-        <section>
-          <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-            <FileText className="h-4 w-4" /> Arquitetura Técnica
-          </h2>
-          <ArchitectureTable />
-        </section>
-
-        {/* Workflow */}
-        <section>
-          <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-            <Zap className="h-4 w-4" /> Loop de Execução — Workflow Diário
-          </h2>
-          <p className="text-xs text-destructive mb-4 font-medium">⚠ Se pular um passo, a alavancagem quebra.</p>
-          <div className="space-y-3">
-            {workflowSteps.map((step, i) => (
-              <WorkflowStep
-                key={i}
-                step={i + 1}
-                title={step.title}
-                duration={step.duration}
-                icon={step.icon}
-                tasks={step.tasks}
-                variant={step.variant || "default"}
-              />
-            ))}
+          <div className="flex items-center gap-3">
+            <Link to="/crm" className="bg-primary text-primary-foreground text-sm font-medium px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-sm shadow-primary/20">
+              <Users className="h-4 w-4" /> Client OS
+            </Link>
+            <Link to="/pipeline" className="bg-card border border-border text-foreground text-sm font-medium px-4 py-2 rounded-lg hover:bg-muted transition-colors flex items-center gap-2 shadow-sm">
+              <Briefcase className="h-4 w-4" /> Pipeline
+            </Link>
           </div>
-        </section>
+        </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Upsells */}
-          <section>
-            <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-              <DollarSign className="h-4 w-4" /> Esteira de Arbitragem (Upsells)
-            </h2>
-            <div className="space-y-3">
-              {upsells.map((u, i) => (
-                <UpsellCard key={i} index={i} {...u} />
-              ))}
-            </div>
-          </section>
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <MetricCard
+            icon={DollarSign}
+            label="MRR (Ativos)"
+            value={new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(metrics?.mrr || 0)}
+            subtitle="Receita Recorrente"
+            accentColor="accent"
+          />
+          <MetricCard
+            icon={Activity}
+            label="Caixa do Mês"
+            value={new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(metrics?.monthlyRevenue || 0)}
+            subtitle="Entradas liquidadas"
+            accentColor="primary"
+          />
+          <MetricCard
+            icon={Users}
+            label="Clientes Ativos"
+            value={metrics?.activeClientsCount || 0}
+            subtitle="Assinaturas vigentes"
+            accentColor="primary"
+          />
+          <MetricCard
+            icon={Settings}
+            label="Setups em Vôo"
+            value={metrics?.setupsPending?.length || 0}
+            subtitle="Projetos em onboarding"
+            accentColor="warning"
+          />
+        </div>
 
-          {/* Gaps */}
-          <section>
-            <h2 className="text-sm font-mono uppercase tracking-wider text-muted-foreground mb-4 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4" /> Prevenção de Falhas (Gaps)
-            </h2>
-            <div className="space-y-3">
-              {gaps.map((g, i) => (
-                <GapCard key={i} index={i} {...g} />
-              ))}
+        {/* Split Section: Action Required & Recent Activity */}
+        <div className="grid lg:grid-cols-2 gap-6">
+
+          {/* Action Required: Pending Setups */}
+          <div className="rounded-xl border border-border bg-card shadow-sm flex flex-col">
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-warning" /> Ação Necessária
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">Setups pausados ou em andamento.</p>
+              </div>
+              <Link to="/setup" className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
+                Ver todos <ArrowUpRight className="h-3 w-3" />
+              </Link>
             </div>
-          </section>
+
+            <div className="p-5 flex-1">
+              {!metrics?.setupsPending || metrics.setupsPending.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-6">
+                  <div className="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center mb-3">
+                    <Settings className="h-5 w-5 text-accent" />
+                  </div>
+                  <p className="text-sm font-medium">Balanço zerado</p>
+                  <p className="text-xs text-muted-foreground mt-1">Nenhum setup atrasado ou pendente.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {metrics.setupsPending.map((client: any) => (
+                    <div key={client.id} className="flex items-center justify-between p-3 rounded-lg border border-border/50 bg-muted/20 hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded bg-warning/15 flex items-center justify-center shrink-0">
+                          <Settings className="h-4 w-4 text-warning" />
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">{client.name}</p>
+                          <span className={cn("text-[10px] px-2 py-0.5 rounded-full font-mono mt-0.5 inline-block", statusColors[client.status as ClientStatus])}>
+                            {statusLabels[client.status as ClientStatus]}
+                          </span>
+                        </div>
+                      </div>
+                      <Link to="/setup" className="p-2 rounded-md bg-background border border-border shadow-sm hover:bg-muted transition-colors text-muted-foreground">
+                        <ArrowUpRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Recent Activity Log */}
+          <div className="rounded-xl border border-border bg-card shadow-sm flex flex-col">
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-primary" /> Atividades Recentes
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">Últimas interações de CRM.</p>
+              </div>
+              <Link to="/crm" className="text-xs text-primary font-medium hover:underline flex items-center gap-1">
+                Client OS <ArrowUpRight className="h-3 w-3" />
+              </Link>
+            </div>
+
+            <div className="p-5 flex-1">
+              {recentActivity.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-6">
+                  <p className="text-sm text-muted-foreground">O radar está limpo.</p>
+                </div>
+              ) : (
+                <div className="space-y-4 relative before:absolute before:inset-0 before:ml-[15px] before:h-full before:w-px before:bg-border">
+                  {recentActivity.map((log: any) => (
+                    <div key={log.id} className="relative flex items-start gap-4 z-10">
+                      <div className="h-8 w-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center shrink-0">
+                        <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
+                      </div>
+                      <div className="flex-1 bg-muted/20 border border-border/50 rounded-lg p-3">
+                        <div className="flex items-start justify-between gap-2 mb-1">
+                          <p className="text-sm font-semibold">{log.clients?.name || "Cliente"}</p>
+                          <span className="text-[10px] font-mono text-muted-foreground whitespace-nowrap">
+                            {new Date(log.interaction_date).toLocaleDateString("pt-BR")}
+                          </span>
+                        </div>
+                        {log.subject && <p className="text-xs font-medium mb-1">{log.subject}</p>}
+                        <p className="text-xs text-muted-foreground line-clamp-2">{log.notes}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </AppLayout>

@@ -12,7 +12,6 @@ import Financeiro from "./pages/Financeiro";
 import Roadmap from "./pages/Roadmap";
 import Auth from "./pages/Auth";
 import CRM from "./pages/CRM";
-import PlanoContas from "./pages/PlanoContas";
 import Propostas from "./pages/Propostas";
 import VisualizarProposta from "./pages/VisualizarProposta";
 import NotFound from "./pages/NotFound";
@@ -42,7 +41,6 @@ const App = () => (
             <Route path="/upsells" element={<ProtectedRoute><Upsells /></ProtectedRoute>} />
             <Route path="/financeiro" element={<ProtectedRoute><Financeiro /></ProtectedRoute>} />
             <Route path="/crm" element={<ProtectedRoute><CRM /></ProtectedRoute>} />
-            <Route path="/plano-contas" element={<ProtectedRoute><PlanoContas /></ProtectedRoute>} />
             <Route path="/propostas" element={<ProtectedRoute><Propostas /></ProtectedRoute>} />
             <Route path="/roadmap" element={<ProtectedRoute><Roadmap /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />

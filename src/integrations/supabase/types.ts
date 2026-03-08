@@ -1,507 +1,508 @@
 export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+    | string
+    | number
+    | boolean
+    | null
+    | { [key: string]: Json | undefined }
+    | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.1"
-  }
-  public: {
-    Tables: {
-      chart_of_accounts: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          is_default: boolean
-          name: string
-          type: string
-          user_id: string
-          workspace_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_default?: boolean
-          name: string
-          type: string
-          user_id: string
-          workspace_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_default?: boolean
-          name?: string
-          type?: string
-          user_id?: string
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chart_of_accounts_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      client_interactions: {
-        Row: {
-          client_id: string
-          created_at: string
-          id: string
-          interaction_date: string
-          notes: string | null
-          subject: string | null
-          type: string
-          user_id: string
-          workspace_id: string | null
-        }
-        Insert: {
-          client_id: string
-          created_at?: string
-          id?: string
-          interaction_date?: string
-          notes?: string | null
-          subject?: string | null
-          type: string
-          user_id: string
-          workspace_id?: string | null
-        }
-        Update: {
-          client_id?: string
-          created_at?: string
-          id?: string
-          interaction_date?: string
-          notes?: string | null
-          subject?: string | null
-          type?: string
-          user_id?: string
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "client_interactions_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "client_interactions_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      client_services: {
-        Row: {
-          client_id: string
-          created_at: string
-          description: string | null
-          end_date: string | null
-          id: string
-          monthly_value: number | null
-          service_name: string
-          start_date: string | null
-          status: string
-          user_id: string
-          workspace_id: string | null
-        }
-        Insert: {
-          client_id: string
-          created_at?: string
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          monthly_value?: number | null
-          service_name: string
-          start_date?: string | null
-          status?: string
-          user_id: string
-          workspace_id?: string | null
-        }
-        Update: {
-          client_id?: string
-          created_at?: string
-          description?: string | null
-          end_date?: string | null
-          id?: string
-          monthly_value?: number | null
-          service_name?: string
-          start_date?: string | null
-          status?: string
-          user_id?: string
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "client_services_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "client_services_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      clients: {
-        Row: {
-          address: string | null
-          city: string | null
-          cnpj_cpf: string | null
-          company_name: string | null
-          created_at: string
-          email: string | null
-          id: string
-          name: string
-          notes: string | null
-          phone: string | null
-          state: string | null
-          status: string
-          updated_at: string
-          user_id: string
-          workspace_id: string | null
-        }
-        Insert: {
-          address?: string | null
-          city?: string | null
-          cnpj_cpf?: string | null
-          company_name?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          name: string
-          notes?: string | null
-          phone?: string | null
-          state?: string | null
-          status?: string
-          updated_at?: string
-          user_id: string
-          workspace_id?: string | null
-        }
-        Update: {
-          address?: string | null
-          city?: string | null
-          cnpj_cpf?: string | null
-          company_name?: string | null
-          created_at?: string
-          email?: string | null
-          id?: string
-          name?: string
-          notes?: string | null
-          phone?: string | null
-          state?: string | null
-          status?: string
-          updated_at?: string
-          user_id?: string
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "clients_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      proposal_items: {
-        Row: {
-          description: string
-          id: string
-          proposal_id: string
-          quantity: number
-          unit_price: number
-        }
-        Insert: {
-          description: string
-          id?: string
-          proposal_id: string
-          quantity?: number
-          unit_price?: number
-        }
-        Update: {
-          description?: string
-          id?: string
-          proposal_id?: string
-          quantity?: number
-          unit_price?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "proposal_items_proposal_id_fkey"
-            columns: ["proposal_id"]
-            isOneToOne: false
-            referencedRelation: "proposals"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      proposals: {
-        Row: {
-          additional_notes: string | null
-          client_id: string
-          contract_text: string | null
-          created_at: string
-          id: string
-          monthly_fee: number
-          sent_at: string | null
-          setup_fee: number
-          status: string
-          title: string
-          updated_at: string
-          user_id: string
-          valid_until: string | null
-          workspace_id: string | null
-        }
-        Insert: {
-          additional_notes?: string | null
-          client_id: string
-          contract_text?: string | null
-          created_at?: string
-          id?: string
-          monthly_fee?: number
-          sent_at?: string | null
-          setup_fee?: number
-          status?: string
-          title?: string
-          updated_at?: string
-          user_id: string
-          valid_until?: string | null
-          workspace_id?: string | null
-        }
-        Update: {
-          additional_notes?: string | null
-          client_id?: string
-          contract_text?: string | null
-          created_at?: string
-          id?: string
-          monthly_fee?: number
-          sent_at?: string | null
-          setup_fee?: number
-          status?: string
-          title?: string
-          updated_at?: string
-          user_id?: string
-          valid_until?: string | null
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "proposals_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "proposals_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      transactions: {
-        Row: {
-          account_id: string
-          amount: number
-          client_id: string | null
-          created_at: string
-          description: string | null
-          id: string
-          transaction_date: string
-          user_id: string
-          workspace_id: string | null
-        }
-        Insert: {
-          account_id: string
-          amount: number
-          client_id?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          transaction_date?: string
-          user_id: string
-          workspace_id?: string | null
-        }
-        Update: {
-          account_id?: string
-          amount?: number
-          client_id?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          transaction_date?: string
-          user_id?: string
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "transactions_account_id_fkey"
-            columns: ["account_id"]
-            isOneToOne: false
-            referencedRelation: "chart_of_accounts"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "transactions_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      upsell_catalog: {
-        Row: {
-          cost: number
-          created_at: string
-          delivery_time: string | null
-          id: string
-          profit: number | null
-          script: string | null
-          sell_price: number
-          service: string
-          supplier: string | null
-          tips: Json | null
-          user_id: string
-          when_to_offer: string | null
-          workspace_id: string | null
-        }
-        Insert: {
-          cost: number
-          created_at?: string
-          delivery_time?: string | null
-          id?: string
-          profit?: number | null
-          script?: string | null
-          sell_price: number
-          service: string
-          supplier?: string | null
-          tips?: Json | null
-          user_id: string
-          when_to_offer?: string | null
-          workspace_id?: string | null
-        }
-        Update: {
-          cost?: number
-          created_at?: string
-          delivery_time?: string | null
-          id?: string
-          profit?: number | null
-          script?: string | null
-          sell_price?: number
-          service?: string
-          supplier?: string | null
-          tips?: Json | null
-          user_id?: string
-          when_to_offer?: string | null
-          workspace_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "upsell_catalog_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workspace_members: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["workspace_role"]
-          user_id: string
-          workspace_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["workspace_role"]
-          user_id: string
-          workspace_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          role?: Database["public"]["Enums"]["workspace_role"]
-          user_id?: string
-          workspace_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "workspace_members_workspace_id_fkey"
-            columns: ["workspace_id"]
-            isOneToOne: false
-            referencedRelation: "workspaces"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      workspaces: {
-        Row: {
-          created_at: string
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          name?: string
-        }
-        Relationships: []
-      }
+    // Allows to automatically instantiate createClient with right options
+    // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+    __InternalSupabase: {
+        PostgrestVersion: "14.1"
     }
-    Views: {
-      [_ in never]: never
+    public: {
+        Tables: {
+            chart_of_accounts: {
+                Row: {
+                    created_at: string
+                    description: string | null
+                    id: string
+                    is_default: boolean
+                    name: string
+                    type: string
+                    user_id: string
+                    workspace_id: string | null
+                }
+                Insert: {
+                    created_at?: string
+                    description?: string | null
+                    id?: string
+                    is_default?: boolean
+                    name: string
+                    type: string
+                    user_id: string
+                    workspace_id?: string | null
+                }
+                Update: {
+                    created_at?: string
+                    description?: string | null
+                    id?: string
+                    is_default?: boolean
+                    name?: string
+                    type?: string
+                    user_id?: string
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "chart_of_accounts_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            client_interactions: {
+                Row: {
+                    client_id: string
+                    created_at: string
+                    id: string
+                    interaction_date: string
+                    notes: string | null
+                    subject: string | null
+                    type: string
+                    user_id: string
+                    workspace_id: string | null
+                }
+                Insert: {
+                    client_id: string
+                    created_at?: string
+                    id?: string
+                    interaction_date?: string
+                    notes?: string | null
+                    subject?: string | null
+                    type: string
+                    user_id: string
+                    workspace_id?: string | null
+                }
+                Update: {
+                    client_id?: string
+                    created_at?: string
+                    id?: string
+                    interaction_date?: string
+                    notes?: string | null
+                    subject?: string | null
+                    type?: string
+                    user_id?: string
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "client_interactions_client_id_fkey"
+                        columns: ["client_id"]
+                        isOneToOne: false
+                        referencedRelation: "clients"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "client_interactions_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            client_services: {
+                Row: {
+                    client_id: string
+                    created_at: string
+                    description: string | null
+                    end_date: string | null
+                    id: string
+                    monthly_value: number | null
+                    service_name: string
+                    start_date: string | null
+                    status: string
+                    user_id: string
+                    workspace_id: string | null
+                }
+                Insert: {
+                    client_id: string
+                    created_at?: string
+                    description?: string | null
+                    end_date?: string | null
+                    id?: string
+                    monthly_value?: number | null
+                    service_name: string
+                    start_date?: string | null
+                    status?: string
+                    user_id: string
+                    workspace_id?: string | null
+                }
+                Update: {
+                    client_id?: string
+                    created_at?: string
+                    description?: string | null
+                    end_date?: string | null
+                    id?: string
+                    monthly_value?: number | null
+                    service_name?: string
+                    start_date?: string | null
+                    status?: string
+                    user_id?: string
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "client_services_client_id_fkey"
+                        columns: ["client_id"]
+                        isOneToOne: false
+                        referencedRelation: "clients"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "client_services_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            clients: {
+                Row: {
+                    address: string | null
+                    city: string | null
+                    cnpj_cpf: string | null
+                    company_name: string | null
+                    created_at: string
+                    email: string | null
+                    id: string
+                    name: string
+                    notes: string | null
+                    phone: string | null
+                    pipeline_stage: string | null
+                    state: string | null
+                    status: string
+                    updated_at: string
+                    user_id: string
+                    workspace_id: string | null
+                }
+                Insert: {
+                    address?: string | null
+                    city?: string | null
+                    cnpj_cpf?: string | null
+                    company_name?: string | null
+                    created_at?: string
+                    email?: string | null
+                    id?: string
+                    name: string
+                    notes?: string | null
+                    phone?: string | null
+                    state?: string | null
+                    status?: string
+                    updated_at?: string
+                    user_id: string
+                    workspace_id?: string | null
+                }
+                Update: {
+                    address?: string | null
+                    city?: string | null
+                    cnpj_cpf?: string | null
+                    company_name?: string | null
+                    created_at?: string
+                    email?: string | null
+                    id?: string
+                    name?: string
+                    notes?: string | null
+                    phone?: string | null
+                    state?: string | null
+                    status?: string
+                    updated_at?: string
+                    user_id?: string
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "clients_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            proposal_items: {
+                Row: {
+                    description: string
+                    id: string
+                    proposal_id: string
+                    quantity: number
+                    unit_price: number
+                }
+                Insert: {
+                    description: string
+                    id?: string
+                    proposal_id: string
+                    quantity?: number
+                    unit_price?: number
+                }
+                Update: {
+                    description?: string
+                    id?: string
+                    proposal_id?: string
+                    quantity?: number
+                    unit_price?: number
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "proposal_items_proposal_id_fkey"
+                        columns: ["proposal_id"]
+                        isOneToOne: false
+                        referencedRelation: "proposals"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            proposals: {
+                Row: {
+                    additional_notes: string | null
+                    client_id: string
+                    contract_text: string | null
+                    created_at: string
+                    id: string
+                    monthly_fee: number
+                    sent_at: string | null
+                    setup_fee: number
+                    status: string
+                    title: string
+                    updated_at: string
+                    user_id: string
+                    valid_until: string | null
+                    workspace_id: string | null
+                }
+                Insert: {
+                    additional_notes?: string | null
+                    client_id: string
+                    contract_text?: string | null
+                    created_at?: string
+                    id?: string
+                    monthly_fee?: number
+                    sent_at?: string | null
+                    setup_fee?: number
+                    status?: string
+                    title?: string
+                    updated_at?: string
+                    user_id: string
+                    valid_until?: string | null
+                    workspace_id?: string | null
+                }
+                Update: {
+                    additional_notes?: string | null
+                    client_id?: string
+                    contract_text?: string | null
+                    created_at?: string
+                    id?: string
+                    monthly_fee?: number
+                    sent_at?: string | null
+                    setup_fee?: number
+                    status?: string
+                    title?: string
+                    updated_at?: string
+                    user_id?: string
+                    valid_until?: string | null
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "proposals_client_id_fkey"
+                        columns: ["client_id"]
+                        isOneToOne: false
+                        referencedRelation: "clients"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "proposals_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            transactions: {
+                Row: {
+                    account_id: string
+                    amount: number
+                    client_id: string | null
+                    created_at: string
+                    description: string | null
+                    id: string
+                    transaction_date: string
+                    user_id: string
+                    workspace_id: string | null
+                }
+                Insert: {
+                    account_id: string
+                    amount: number
+                    client_id?: string | null
+                    created_at?: string
+                    description?: string | null
+                    id?: string
+                    transaction_date?: string
+                    user_id: string
+                    workspace_id?: string | null
+                }
+                Update: {
+                    account_id?: string
+                    amount?: number
+                    client_id?: string | null
+                    created_at?: string
+                    description?: string | null
+                    id?: string
+                    transaction_date?: string
+                    user_id?: string
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "transactions_account_id_fkey"
+                        columns: ["account_id"]
+                        isOneToOne: false
+                        referencedRelation: "chart_of_accounts"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "transactions_client_id_fkey"
+                        columns: ["client_id"]
+                        isOneToOne: false
+                        referencedRelation: "clients"
+                        referencedColumns: ["id"]
+                    },
+                    {
+                        foreignKeyName: "transactions_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            upsell_catalog: {
+                Row: {
+                    cost: number
+                    created_at: string
+                    delivery_time: string | null
+                    id: string
+                    profit: number | null
+                    script: string | null
+                    sell_price: number
+                    service: string
+                    supplier: string | null
+                    tips: Json | null
+                    user_id: string
+                    when_to_offer: string | null
+                    workspace_id: string | null
+                }
+                Insert: {
+                    cost: number
+                    created_at?: string
+                    delivery_time?: string | null
+                    id?: string
+                    profit?: number | null
+                    script?: string | null
+                    sell_price: number
+                    service: string
+                    supplier?: string | null
+                    tips?: Json | null
+                    user_id: string
+                    when_to_offer?: string | null
+                    workspace_id?: string | null
+                }
+                Update: {
+                    cost?: number
+                    created_at?: string
+                    delivery_time?: string | null
+                    id?: string
+                    profit?: number | null
+                    script?: string | null
+                    sell_price?: number
+                    service?: string
+                    supplier?: string | null
+                    tips?: Json | null
+                    user_id?: string
+                    when_to_offer?: string | null
+                    workspace_id?: string | null
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "upsell_catalog_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            workspace_members: {
+                Row: {
+                    created_at: string
+                    id: string
+                    role: Database["public"]["Enums"]["workspace_role"]
+                    user_id: string
+                    workspace_id: string
+                }
+                Insert: {
+                    created_at?: string
+                    id?: string
+                    role?: Database["public"]["Enums"]["workspace_role"]
+                    user_id: string
+                    workspace_id: string
+                }
+                Update: {
+                    created_at?: string
+                    id?: string
+                    role?: Database["public"]["Enums"]["workspace_role"]
+                    user_id?: string
+                    workspace_id?: string
+                }
+                Relationships: [
+                    {
+                        foreignKeyName: "workspace_members_workspace_id_fkey"
+                        columns: ["workspace_id"]
+                        isOneToOne: false
+                        referencedRelation: "workspaces"
+                        referencedColumns: ["id"]
+                    },
+                ]
+            }
+            workspaces: {
+                Row: {
+                    created_at: string
+                    id: string
+                    name: string
+                }
+                Insert: {
+                    created_at?: string
+                    id?: string
+                    name: string
+                }
+                Update: {
+                    created_at?: string
+                    id?: string
+                    name?: string
+                }
+                Relationships: []
+            }
+        }
+        Views: {
+            [_ in never]: never
+        }
+        Functions: {
+            get_proposal_user_id: { Args: { p_proposal_id: string }; Returns: string }
+            get_user_workspaces: { Args: never; Returns: string[] }
+        }
+        Enums: {
+            workspace_role: "admin" | "sales" | "operator"
+        }
+        CompositeTypes: {
+            [_ in never]: never
+        }
     }
-    Functions: {
-      get_proposal_user_id: { Args: { p_proposal_id: string }; Returns: string }
-      get_user_workspaces: { Args: never; Returns: string[] }
-    }
-    Enums: {
-      workspace_role: "admin" | "sales" | "operator"
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
 }
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
@@ -509,123 +510,123 @@ type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
-  DefaultSchemaTableNameOrOptions extends
+    DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals
+    }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R
-    }
+    ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+            Row: infer R
+        }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+    : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
         DefaultSchema["Views"])
     ? (DefaultSchema["Tables"] &
         DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
-        Row: infer R
-      }
-      ? R
-      : never
+            Row: infer R
+        }
+    ? R
+    : never
     : never
 
 export type TablesInsert<
-  DefaultSchemaTableNameOrOptions extends
+    DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals
+    }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I
+    ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+        Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
-      }
-      ? I
-      : never
+    }
+    ? I
+    : never
     : never
 
 export type TablesUpdate<
-  DefaultSchemaTableNameOrOptions extends
+    DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+    TableName extends DefaultSchemaTableNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals
+    }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U
+    ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+        Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
     ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
-      }
-      ? U
-      : never
+    }
+    ? U
+    : never
     : never
 
 export type Enums<
-  DefaultSchemaEnumNameOrOptions extends
+    DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+    EnumName extends DefaultSchemaEnumNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals
+    }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+    : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
+    PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
+    CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+        schema: keyof DatabaseWithoutInternals
+    }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
+    schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+    : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
-  public: {
-    Enums: {
-      workspace_role: ["admin", "sales", "operator"],
+    public: {
+        Enums: {
+            workspace_role: ["admin", "sales", "operator"],
+        },
     },
-  },
 } as const
 

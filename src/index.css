@@ -1,60 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    --background: 220 20% 7%;
-    --foreground: 210 20% 92%;
+    /* ── Core Palette: Deep Obsidian + Electric Cyan ── */
+    --background: 225 22% 6%;
+    --foreground: 210 25% 93%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 210 20% 92%;
+    --card: 225 20% 9%;
+    --card-foreground: 210 25% 93%;
 
-    --popover: 220 18% 12%;
-    --popover-foreground: 210 20% 92%;
+    --popover: 225 20% 11%;
+    --popover-foreground: 210 25% 93%;
 
-    --primary: 200 100% 50%;
-    --primary-foreground: 220 20% 7%;
+    /* Primary: Vivid Electric Blue */
+    --primary: 210 100% 56%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 16% 16%;
+    --secondary: 225 18% 15%;
     --secondary-foreground: 210 20% 85%;
 
-    --muted: 220 14% 14%;
-    --muted-foreground: 215 15% 55%;
+    --muted: 225 16% 13%;
+    --muted-foreground: 215 15% 50%;
 
-    --accent: 150 80% 45%;
-    --accent-foreground: 220 20% 7%;
+    /* Accent: Emerald Neon */
+    --accent: 160 84% 44%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 55%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 78% 58%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 16% 18%;
-    --input: 220 16% 18%;
-    --ring: 200 100% 50%;
+    --border: 225 16% 16%;
+    --input: 225 16% 16%;
+    --ring: 210 100% 56%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
-    --warning: 38 92% 50%;
-    --warning-foreground: 220 20% 7%;
+    --warning: 40 96% 53%;
+    --warning-foreground: 225 22% 6%;
 
-    --success: 150 80% 45%;
-    --success-foreground: 220 20% 7%;
+    --success: 160 84% 44%;
+    --success-foreground: 0 0% 100%;
 
-    --info: 200 100% 50%;
-    --info-foreground: 220 20% 7%;
+    --info: 210 100% 56%;
+    --info-foreground: 0 0% 100%;
 
-    --glow-primary: 0 0 20px hsl(200 100% 50% / 0.3);
-    --glow-accent: 0 0 20px hsl(150 80% 45% / 0.3);
+    /* Glow effects */
+    --glow-primary: 0 0 24px hsl(210 100% 56% / 0.25), 0 0 4px hsl(210 100% 56% / 0.15);
+    --glow-accent: 0 0 24px hsl(160 84% 44% / 0.25), 0 0 4px hsl(160 84% 44% / 0.15);
 
-    --sidebar-background: 220 20% 5%;
+    /* Sidebar */
+    --sidebar-background: 225 22% 5%;
     --sidebar-foreground: 210 20% 85%;
-    --sidebar-primary: 200 100% 50%;
-    --sidebar-primary-foreground: 220 20% 7%;
-    --sidebar-accent: 220 16% 14%;
+    --sidebar-primary: 210 100% 56%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 225 18% 13%;
     --sidebar-accent-foreground: 210 20% 85%;
-    --sidebar-border: 220 16% 15%;
-    --sidebar-ring: 200 100% 50%;
+    --sidebar-border: 225 16% 14%;
+    --sidebar-ring: 210 100% 56%;
   }
 }
 
@@ -64,12 +70,42 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    font-feature-settings: "cv01", "cv02", "cv03", "cv04";
+    letter-spacing: -0.011em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  code, .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+  code,
+  .font-mono {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* Enhanced scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(225 16% 20%);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(225 16% 28%);
+  }
+
+  /* Selection */
+  ::selection {
+    background: hsl(210 100% 56% / 0.25);
+    color: hsl(210 25% 93%);
   }
 }
 
@@ -77,20 +113,56 @@
   .glow-primary {
     box-shadow: var(--glow-primary);
   }
+
   .glow-accent {
     box-shadow: var(--glow-accent);
   }
+
   .text-gradient {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(200 100% 50%), hsl(150 80% 45%));
+    background-image: linear-gradient(135deg, hsl(210 100% 56%), hsl(160 84% 44%));
   }
+
   .border-glow {
-    border-color: hsl(200 100% 50% / 0.3);
+    border-color: hsl(210 100% 56% / 0.25);
   }
+
   .bg-grid {
-    background-image: 
-      linear-gradient(hsl(220 16% 18% / 0.5) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(220 16% 18% / 0.5) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, hsl(210 100% 56% / 0.06), transparent),
+      linear-gradient(hsl(225 16% 14% / 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(225 16% 14% / 0.4) 1px, transparent 1px);
+    background-size: 100% 100%, 48px 48px, 48px 48px;
+  }
+
+  /* Glass effect for premium cards */
+  .glass {
+    background: hsl(225 20% 9% / 0.7);
+    backdrop-filter: blur(12px) saturate(1.5);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+  }
+
+  /* Smooth animations */
+  .animate-glow-pulse {
+    animation: glow-pulse 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow-pulse {
+    from {
+      box-shadow: 0 0 12px hsl(210 100% 56% / 0.15);
+    }
+
+    to {
+      box-shadow: 0 0 28px hsl(210 100% 56% / 0.3);
+    }
+  }
+
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
   }
 }
