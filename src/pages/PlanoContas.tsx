@@ -21,7 +21,7 @@ const typeColors: Record<AccountType, string> = {
 };
 
 const PlanoContas = () => {
-  const { user } = useAuth();
+  const { user, workspaceId } = useAuth();
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showAccountForm, setShowAccountForm] = useState(false);
@@ -61,12 +61,13 @@ const PlanoContas = () => {
 
   const saveAccount = useMutation({
     mutationFn: async (data: typeof accountForm) => {
-      const { error } = await supabase.from("chart_of_accounts").insert({ ...data, user_id: user!.id });
+      const { error } = await supabase.from("chart_of_accounts").insert({ ...data, user_id: user!.id, workspace_id: workspaceId });
       if (error) throw error;
     },
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["accounts"] }); setShowAccountForm(false); setAccountForm({ name: "", type: "revenue", description: "" }); toast({ title: "Conta criada!" }); },
     onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
   });
+
 
   const deleteAccount = useMutation({
     mutationFn: async (id: string) => {
@@ -77,10 +78,21 @@ const PlanoContas = () => {
     onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
   });
 
+  const deleteTransaction = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("transactions").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["transactions"] }); toast({ title: "Transação removida." }); },
+    onError: (e: any) => toast({ title: "Erro", description: e.message, variant: "destructive" }),
+  });
+
+
   const saveTransaction = useMutation({
     mutationFn: async (data: typeof txForm) => {
       const { error } = await supabase.from("transactions").insert({
         user_id: user!.id,
+        workspace_id: workspaceId,
         account_id: data.account_id,
         client_id: data.client_id || null,
         amount: parseFloat(data.amount),
@@ -234,6 +246,7 @@ const PlanoContas = () => {
                   <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Cliente</th>
                   <th className="px-4 py-3 text-left text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Descrição</th>
                   <th className="px-4 py-3 text-right text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Valor</th>
+                  <th className="px-4 py-3 w-10"></th>
                 </tr>
               </thead>
               <tbody>
@@ -248,6 +261,11 @@ const PlanoContas = () => {
                     <td className={cn("px-4 py-3 text-right font-bold text-sm",
                       t.chart_of_accounts?.type === "revenue" ? "text-accent" : "text-destructive"
                     )}>R$ {Number(t.amount).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</td>
+                    <td className="px-4 py-3">
+                      <button onClick={() => deleteTransaction.mutate(t.id)} className="p-1 rounded hover:bg-destructive/10">
+                        <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

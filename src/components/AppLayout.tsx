@@ -34,7 +34,7 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
             </div>
             <div>
               <h1 className="text-lg font-bold tracking-tight">
-                BR360 <span className="text-gradient">Intelligence</span>
+                BR360 <span className="text-gradient">House</span>
               </h1>
               <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
                 ops command center
@@ -81,7 +81,7 @@ export const AppLayout = ({ children }: { children: ReactNode }) => {
 
       <footer className="border-t py-6 text-center">
         <p className="text-xs text-muted-foreground font-mono">
-          BR360 Intelligence — One-Person Venture Studio — Ferramenta de Gestão Interna
+          BR360 House — One-Person Venture Studio — Ferramenta de Gestão Interna
         </p>
       </footer>
     </div>

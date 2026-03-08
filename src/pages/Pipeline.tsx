@@ -4,10 +4,16 @@ import {
   ArrowRight, Clock, AlertCircle
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PipelineStage {
   id: string;
+  db_id: string; // The pipeline_stage value in DB
   title: string;
   icon: React.ElementType;
   color: string;
@@ -22,6 +28,7 @@ interface PipelineStage {
 const stages: PipelineStage[] = [
   {
     id: "lead",
+    db_id: "lead",
     title: "Lead",
     icon: Users,
     color: "text-blue-400",
@@ -43,6 +50,7 @@ const stages: PipelineStage[] = [
   },
   {
     id: "proposta",
+    db_id: "proposta",
     title: "Proposta",
     icon: FileText,
     color: "text-amber-400",
@@ -64,6 +72,7 @@ const stages: PipelineStage[] = [
   },
   {
     id: "setup",
+    db_id: "setup",
     title: "Em Setup",
     icon: Settings,
     color: "text-primary",
@@ -84,6 +93,7 @@ const stages: PipelineStage[] = [
   },
   {
     id: "ativo",
+    db_id: "ativo",
     title: "Ativo",
     icon: CheckCircle2,
     color: "text-accent",
@@ -113,6 +123,64 @@ const metrics = [
 ];
 
 const Pipeline = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const qc = useQueryClient();
+  const [draggedClient, setDraggedClient] = useState<string | null>(null);
+
+  const { data: clients = [] } = useQuery({
+    queryKey: ["kanban-clients"],
+    queryFn: async () => {
+      // Notice: Only user! in non-demo, but this works.
+      const { data, error } = await supabase
+        .from("clients")
+        .select("id, name, pipeline_stage, company_name")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const updateStage = useMutation({
+    mutationFn: async ({ id, stage }: { id: string; stage: string }) => {
+      const { error } = await supabase.from("clients").update({ pipeline_stage: stage }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["kanban-clients"] });
+    },
+    onError: (e: Error) => {
+      toast({ title: "Erro ao mover cliente", description: e.message, variant: "destructive" });
+    }
+  });
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    e.dataTransfer.setData("clientId", id);
+    setDraggedClient(id);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Necessary to allow dropping
+  };
+
+  const handleDrop = (e: React.DragEvent, stageDbId: string) => {
+    e.preventDefault();
+    const clientId = e.dataTransfer.getData("clientId");
+    setDraggedClient(null);
+    if (!clientId) return;
+
+    const client = clients.find((c: any) => c.id === clientId);
+    if (client && client.pipeline_stage !== stageDbId) {
+      updateStage.mutate({ id: clientId, stage: stageDbId });
+    }
+  };
+
+  // Safe checks if pipeline_stage doesn't exist yet (for demo/legacy data)
+  const getClientsInStage = (stageId: string) => {
+    return clients.filter((c: any) => c.pipeline_stage === stageId || (stageId === 'lead' && !c.pipeline_stage));
+  };
+
   return (
     <AppLayout>
       <div className="space-y-8">
@@ -140,20 +208,59 @@ const Pipeline = () => {
           ))}
         </div>
 
-        {/* Visual funnel */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2">
-          {stages.map((stage, i) => (
-            <div key={stage.id} className="flex items-center gap-2">
-              <div className={cn("rounded-lg border px-4 py-3 min-w-[140px] text-center", stage.bgColor)}>
-                <stage.icon className={cn("h-5 w-5 mx-auto mb-1", stage.color)} />
-                <p className="text-sm font-semibold">{stage.title}</p>
-                <p className="text-[10px] text-muted-foreground font-mono">{stage.avgTime}</p>
+        {/* Functional Kanban Board */}
+        <div className="flex items-start gap-4 overflow-x-auto pb-4 h-[500px]">
+          {stages.map((stage) => {
+            const stageClients = getClientsInStage(stage.db_id);
+            return (
+              <div
+                key={stage.id}
+                className={cn("flex flex-col min-w-[280px] w-[280px] h-full rounded-xl border bg-card/40 p-3 transition-colors",
+                  stage.bgColor,
+                  draggedClient ? "hover:border-primary/50 hover:bg-card/60" : ""
+                )}
+                onDragOver={handleDragOver}
+                onDrop={(e) => handleDrop(e, stage.db_id)}
+              >
+                <div className="flex items-center justify-between mb-4 px-1">
+                  <div className="flex items-center gap-2">
+                    <stage.icon className={cn("h-4 w-4", stage.color)} />
+                    <h3 className="font-bold text-sm">{stage.title}</h3>
+                  </div>
+                  <span className="text-xs font-mono text-muted-foreground bg-background px-2 py-0.5 rounded-full border">{stageClients.length}</span>
+                </div>
+
+                <div className="flex-1 overflow-y-auto space-y-2 pb-2 pr-1 custom-scrollbar min-h-[100px]">
+                  {stageClients.map((client: any) => {
+                    const isDragging = draggedClient === client.id;
+                    return (
+                      <div
+                        key={client.id}
+                        draggable
+                        onDragStart={(e) => handleDragStart(e, client.id)}
+                        onDragEnd={() => setDraggedClient(null)}
+                        className={cn(
+                          "cursor-grab active:cursor-grabbing rounded-lg border bg-card p-3 shadow-sm hover:border-primary/50 transition-colors relative z-10",
+                          isDragging && "opacity-50 border-dashed border-primary"
+                        )}
+                      >
+                        <p className="font-semibold text-sm truncate">{client.name}</p>
+                        {client.company_name && (
+                          <p className="text-xs text-muted-foreground truncate">{client.company_name}</p>
+                        )}
+                      </div>
+                    );
+                  })}
+
+                  {stageClients.length === 0 && (
+                    <div className="h-full min-h-[100px] w-full rounded-lg border border-dashed border-border flex items-center justify-center opacity-50 relative pointer-events-none">
+                      <p className="text-[10px] uppercase font-mono tracking-wider text-muted-foreground">Soltar aqui</p>
+                    </div>
+                  )}
+                </div>
               </div>
-              {i < stages.length - 1 && (
-                <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Stage details */}

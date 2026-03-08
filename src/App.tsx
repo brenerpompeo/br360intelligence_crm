@@ -14,6 +14,7 @@ import Auth from "./pages/Auth";
 import CRM from "./pages/CRM";
 import PlanoContas from "./pages/PlanoContas";
 import Propostas from "./pages/Propostas";
+import VisualizarProposta from "./pages/VisualizarProposta";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +35,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/proposta/:id" element={<VisualizarProposta />} />
             <Route path="/" element={<ProtectedRoute><Index /></ProtectedRoute>} />
             <Route path="/setup" element={<ProtectedRoute><SetupChecklist /></ProtectedRoute>} />
             <Route path="/pipeline" element={<ProtectedRoute><Pipeline /></ProtectedRoute>} />

@@ -5,6 +5,8 @@ import {
   AlertTriangle, CheckCircle2
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const mrrSimulation = [
   { clients: 10, mrr: "R$ 2.749", setup: "R$ 14.900", annual: "R$ 47.888" },
@@ -65,6 +67,26 @@ const kpis = [
 ];
 
 const Financeiro = () => {
+  const { data: activeServices = [], isLoading } = useQuery({
+    queryKey: ["all-active-services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("client_services")
+        .select("monthly_value")
+        .eq("status", "active");
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const currentMRR = activeServices.reduce((acc, curr) => acc + (Number(curr.monthly_value) || 0), 0);
+  const formattedMRR = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(currentMRR);
+
+  const dynamicKpis = [
+    { label: "MRR Atual", value: isLoading ? "Calculando..." : formattedMRR, sub: `${activeServices.length} serviços ativos`, icon: Target, color: "text-primary" },
+    ...kpis.slice(1)
+  ];
+
   return (
     <AppLayout>
       <div className="space-y-8">
@@ -77,7 +99,7 @@ const Financeiro = () => {
 
         {/* KPIs */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {kpis.map((kpi, i) => (
+          {dynamicKpis.map((kpi, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, y: 10 }}

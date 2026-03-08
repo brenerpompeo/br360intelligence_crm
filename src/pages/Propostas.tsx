@@ -21,32 +21,48 @@ const statusConfig: Record<ProposalStatus, { label: string; color: string; icon:
   expired: { label: "Expirada", color: "bg-amber-400/15 text-amber-400", icon: Clock },
 };
 
-const DEFAULT_CONTRACT = `CONTRATO DE PRESTAÇÃO DE SERVIÇOS
+const DEFAULT_CONTRACT = `**CONTRATO DE PRESTAÇÃO DE SERVIÇOS E LICENCIAMENTO DE SOFTWARE (WaaS)**
 
-Pelo presente instrumento particular, as partes:
+**CONTRATADA:** BR360 House, [Seu CNPJ], com sede em [Seu Endereço].
+**CONTRATANTE:** [NOME_DO_CLIENTE], inscrito no CPF/CNPJ [DOCUMENTO], com sede em [ENDEREÇO_DO_CLIENTE].
 
-CONTRATADA: BR360 Digital, empresa especializada em criação e manutenção de sites profissionais.
+**CLÁUSULA 1ª - DO OBJETO**
+O presente contrato tem como objeto a criação, hospedagem, licenciamento de uso e manutenção contínua de um site profissional para o CONTRATANTE, operado através da infraestrutura tecnológica da CONTRATADA.
 
-CONTRATANTE: [NOME DO CLIENTE], inscrito no CPF/CNPJ [DOCUMENTO].
+**CLÁUSULA 2ª - DO ESCOPO DE SERVIÇOS (O QUE ESTÁ INCLUSO)**
+A CONTRATADA compromete-se a fornecer:
+1. Setup Inicial: Desenvolvimento do site com base em estruturas otimizadas para alta conversão.
+2. Hospedagem e Infraestrutura: Manutenção do site em servidores de alta performance com otimização automática de imagens (formato WebP).
+3. Manutenção Mensal: Atualizações de segurança, correções de bugs e até [X] solicitações mensais de alterações simples de conteúdo.
+4. Domínio: Configuração de apontamento de domínio (DNS).
 
-Cláusula 1ª - Do Objeto
-A CONTRATADA se compromete a criar e manter um site profissional para o CONTRATANTE, incluindo hospedagem, domínio e manutenção contínua.
+**CLÁUSULA 3ª - DAS EXCLUSÕES (O QUE NÃO ESTÁ INCLUSO)**
+Para manter a estabilidade do sistema, fica expressamente excluído do escopo padrão:
+1. Desenvolvimento de funcionalidades exclusivas, sistemas complexos, ou integração com APIs não previstas na estrutura base. Solicitações desta natureza serão orçadas separadamente ou sumariamente recusadas.
+2. Criação de identidade visual (Logos), sessões de fotos ou redação publicitária (Copywriting Premium), que poderão ser contratados via esteira de serviços adicionais (Upsells).
 
-Cláusula 2ª - Do Valor
-Taxa de Setup (única): R$ 1.490,00
-Manutenção mensal: R$ 274,90/mês
+**CLÁUSULA 4ª - DOS PRAZOS**
+O site será entregue em ambiente de produção em até 5 dias úteis, contados exclusivamente a partir do momento em que o CONTRATANTE fornecer 100% dos materiais necessários (formulário de onboarding, logo, fotos e textos base).
 
-Cláusula 3ª - Do Prazo
-O site será entregue em até 5 dias úteis após o preenchimento completo do formulário de informações.
+**CLÁUSULA 5ª - DOS VALORES E FORMA DE PAGAMENTO**
+Pela prestação dos serviços, o CONTRATANTE pagará à CONTRATADA:
+1. Taxa de Setup (Pagamento Único): R$ 1.490,00, pagos integralmente antes do início do desenvolvimento.
+2. Assinatura (Mensalidade Recorrente): R$ 274,90 mensais, cobrados a cada ciclo de 30 dias a partir da entrega do site.
+Parágrafo Único: O inadimplemento da assinatura mensal por prazo superior a 5 dias acarretará a suspensão temporária do site até a regularização.
 
-Cláusula 4ª - Da Manutenção
-Alterações de conteúdo (textos e fotos) estão incluídas na manutenção mensal. Funcionalidades extras são cobradas à parte.
+**CLÁUSULA 6ª - DAS OBRIGAÇÕES DO CONTRATANTE**
+1. Fornecer imagens, textos e informações verídicas de sua propriedade intelectual para inserção no site.
+2. Não solicitar acesso direto ao código-fonte ou painel de infraestrutura em nuvem, sendo o acesso restrito aos técnicos da CONTRATADA para garantir a segurança da operação.
 
-Cláusula 5ª - Do Cancelamento
-O cancelamento pode ser solicitado a qualquer momento, com vigência até o fim do período pago.`;
+**CLÁUSULA 7ª - PROPRIEDADE INTELECTUAL E CANCELAMENTO**
+1. Os dados de negócio, logotipos, textos e imagens inseridos no site são de propriedade exclusiva do CONTRATANTE.
+2. A estrutura algorítmica, código-fonte (repositório) e arquitetura de dados são de propriedade intelectual exclusiva da CONTRATADA, caracterizando este contrato como um licenciamento de uso (SaaS) e não uma venda de software.
+3. O cancelamento pode ser solicitado a qualquer momento pelo CONTRATANTE, sem multa de fidelidade, permanecendo o site ativo até o encerramento do ciclo mensal já pago. Após este prazo, o serviço será descontinuado e o site retirado do ar.
+
+Por estarem justos e contratados, o ACEITE DIGITAL na plataforma tem força de assinatura.`;
 
 const Propostas = () => {
-  const { user } = useAuth();
+  const { user, workspaceId } = useAuth();
   const { toast } = useToast();
   const qc = useQueryClient();
   const [showForm, setShowForm] = useState(false);
@@ -97,6 +113,7 @@ const Propostas = () => {
     mutationFn: async () => {
       const payload = {
         user_id: user!.id,
+        workspace_id: workspaceId,
         client_id: form.client_id,
         title: form.title,
         setup_fee: parseFloat(form.setup_fee),
